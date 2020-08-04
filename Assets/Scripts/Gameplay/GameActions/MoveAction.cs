@@ -1,50 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class MoveAction : BaseAction
+public class MoveAction : AoeAction
 {
-    private CreatureStats _character;
-    private Tail _target;
     private bool _isExecuted = true;
-
-    public MoveAction(CreatureStats Character, Tail Target)
-    {
-        _character = Character;
-        _target = Target;
-        _character.playerScript.OnMoveFinish += PlayerScript_OnMoveFinish;
-    }
 
     private void PlayerScript_OnMoveFinish()
     {
         _isExecuted = false;
-        _character.playerScript.OnMoveFinish -= PlayerScript_OnMoveFinish;
+        //Source.playerScript.OnMoveFinish -= PlayerScript_OnMoveFinish;
     }
 
     public override IEnumerator Execute()
     {
-        List<Vector3> path = PathFinder.instance.GetPath(_character.transform.position, _target.transform.position, _character.SPD);
+        List<Vector3> path = PathFinder.instance.GetPath(Source.transform.position, Target.transform.position, Source.SPD);
 
         for (int i = 1; i < path.Count; i++)
         {
+            //Освобождаем клетку, с которой двигается персонаж
+            Tail tail = Physics.OverlapSphere(transform.position, 0.2f, 1 << 8).First().GetComponent<Tail>();
+            tail.TailType = Tail.TailTypes.Ground;
+            tail.Creature = null;
+
             GameObject obj = new GameObject("target");
             obj.transform.position = path[i];
-            _character.playerScript.SetTarget(obj);
+            Source.playerScript.SetTarget(obj);
+
+            //Source.playerScript.OnMoveFinish += PlayerScript_OnMoveFinish;
         }
 
-        while (_isExecuted)
+        while (Source.playerScript.targetsMove.Count > 0)
         {
             yield return new WaitForSeconds(0.5f);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
+
+        //Занимаем клетку
+        Target.Creature = Source;
+        Target.TailType = Tail.TailTypes.Character;
+
         status = MatchSystem.actionStatuses.end;
     }
 
     public override bool Check()
     {
-        List<Vector3> path = PathFinder.instance.GetPath(_character.transform.position, _target.transform.position, _character.SPD);
-        List<Vector3> fullPath = PathFinder.instance.GetPath(_character.transform.position, _target.transform.position);
+        List<Vector3> path = PathFinder.instance.GetPath(Source.transform.position, Target.transform.position, Source.SPD);
+        List<Vector3> fullPath = PathFinder.instance.GetPath(Source.transform.position, Target.transform.position);
 
         if (path.Count != fullPath.Count)
         {

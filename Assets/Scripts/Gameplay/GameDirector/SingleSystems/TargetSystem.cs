@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class TargetSystem : MonoBehaviour
@@ -42,7 +43,7 @@ public class TargetSystem : MonoBehaviour
 
             if (_action == null)
             {
-                MatchSystem.instance.RunAction(new AttackAction(null,creature));
+                //MatchSystem.instance.RunAction(new AttackAction(null,creature));
             }
         }
         else if (obj.isTreasure)
@@ -50,7 +51,7 @@ public class TargetSystem : MonoBehaviour
             Treasure treasure = obj.GetComponent<Treasure>();
             if (_action == null)
             {
-                MatchSystem.instance.RunAction(new PickTreasureAction(null, treasure));
+                //MatchSystem.instance.RunAction(new PickTreasureAction(null, treasure));
             }
         }
     }

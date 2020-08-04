@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,46 +20,70 @@ public class DefaultInputSystem : InputSystem
         _playerTail = GameHelper.instance.GetTailFromObject(MatchSystem.instance.GetActivePlayer().gameObject);
     }
 
-    public override void OnClick(ClickObject obj)
+    public override void OnClick(Tail obj)
     {
-        if (obj.isTail)
+        if (obj.TailType == Tail.TailTypes.Ground)
         {
-            MoveAction action = new MoveAction(MatchSystem.instance.GetActivePlayer(), obj.GetComponent<Tail>());
+            MoveAction action = MatchSystem.instance.GetActivePlayer().GetComponent<MoveAction>();
+            action.Init(obj);
             MatchSystem.instance.RunAction(action);
         }
-        else if (obj.isTreasure)
+        else if (obj.TailType == Tail.TailTypes.Treasure)
         {
-            MatchSystem.instance.RunAction(new PickTreasureAction(null, obj.GetComponent<Treasure>()));
+            PickTreasureAction action = MatchSystem.instance.GetActivePlayer().GetComponent<PickTreasureAction>();
+            action.Init(obj.Treasure);
+            MatchSystem.instance.RunAction(action);
+
+            //MatchSystem.instance.RunAction(new PickTreasureAction(null, obj.Treasure));
         }
-        else if (obj.isCreature)
+        else if (obj.TailType == Tail.TailTypes.Character)
         {
-            MatchSystem.instance.RunAction(new AttackAction(null, obj.GetComponent<CreatureStats>()));
+            AttackAction action = MatchSystem.instance.GetActivePlayer().GetComponent<AttackAction>();
+            action.Init(obj.Creature);
+            MatchSystem.instance.RunAction(action);
         }
     }
 
-    public override void OnHoverIn(ClickObject obj)
+    public override void OnHoverIn(Tail obj)
     {
-        if (obj.isTail)
+        if (obj.TailType == Tail.TailTypes.Ground)
         {
-            TailHover(obj.GetComponent<Tail>());
-        }
-    }
-
-    public override void OnHoverOut(ClickObject obj)
-    {
-        if (obj.isTail)
+            TailHover(obj);
+        } else if (obj.TailType == Tail.TailTypes.Character)
         {
-            foreach (Tail t in PathFinder.instance.getLastResult())
+            if (GameHelper.instance.CheckAttack(MatchSystem.instance.GetActivePlayer(), obj.Creature))
             {
-                t.SetColor(Color.white);
+                obj.SetColor(Color.green);
+            } else
+            {
+                obj.SetColor(Color.red);
             }
-            obj.GetComponent<Tail>().SetColor(Color.white);
+        } else if (obj.TailType == Tail.TailTypes.Treasure)
+        {
+            PickTreasureAction checkAction = MatchSystem.instance.GetActivePlayer().GetComponent<PickTreasureAction>();
+            checkAction.Init(obj.Treasure);
+            if (checkAction.Check()) {
+                obj.SetColor(Color.green);
+            } else
+            {
+                obj.SetColor(Color.red);
+            }
         }
+    }
+
+    public override void OnHoverOut(Tail obj)
+    {
+        foreach (Tail t in PathFinder.instance.getLastResult())
+        {
+            t.SetColor(Color.white);
+        }
+       
+        obj.SetColor(Color.white);
     }
 
     private void TailHover(Tail tail)
     {
-        tail.SetColor(Color.blue);
+        tail.SetColor(Color.red);
 
         List<Tail> path = PathFinder.instance.getPath(_playerTail, tail, MatchSystem.instance.GetActivePlayer().SPD);
 

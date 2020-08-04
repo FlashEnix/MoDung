@@ -57,6 +57,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -106,6 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4db5d084b894543bdfd9a4a477688e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TailType: 0
+  Creature: {fileID: 0}
+  Treasure: {fileID: 0}
 --- !u!114 &8177526005744580095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +117,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3558256908693993245}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 762f1de5978631b4183514a64c4bb46e, type: 3}
   m_Name: 

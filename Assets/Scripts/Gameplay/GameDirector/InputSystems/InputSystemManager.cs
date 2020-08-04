@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class InputSystemManager : MonoBehaviour
 {
+    private Tail _tailHovered;
+
     public static InputSystemManager instance;
     public event Action OnChangeSystem;
 
@@ -21,14 +23,20 @@ public class InputSystemManager : MonoBehaviour
     {
         _inputSystems = FindObjectsOfType<InputSystem>().ToList();
 
-        ClickObject.OnHoverIn += ClickObject_OnHoverIn;
-        ClickObject.OnHoverOut += ClickObject_OnHoverOut;
-        ClickObject.OnClick += ClickObject_OnClick;
+        Tail.OnHoverIn += ClickObject_OnHoverIn;
+        Tail.OnHoverOut += ClickObject_OnHoverOut;
+        Tail.OnClick += ClickObject_OnClick;
+        Tail.OnHovered += Tail_OnHovered;
         MatchSystem.instance.OnActionStart += MatchSystem_OnActionStart;
         MatchSystem.instance.OnActionEnd += MatchSystem_OnActionEnd;
         MatchSystem.instance.OnChangePlayer += MatchSystem_OnChangePlayer;
 
         EnableSystem(GetComponent<DefaultInputSystem>());
+    }
+
+    private void Tail_OnHovered(Tail obj)
+    {
+        _tailHovered = obj;
     }
 
     private void Update()
@@ -70,7 +78,7 @@ public class InputSystemManager : MonoBehaviour
         DisableSystem();
     }
 
-    private void ClickObject_OnClick(ClickObject obj)
+    private void ClickObject_OnClick(Tail obj)
     {
         if (_activeSystem != null)
         {
@@ -79,12 +87,13 @@ public class InputSystemManager : MonoBehaviour
         }
     }
 
-    private void ClickObject_OnHoverOut(ClickObject obj)
+    private void ClickObject_OnHoverOut(Tail obj)
     {
         if (_activeSystem != null) _activeSystem.OnHoverOut(obj);
+        _tailHovered = null;
     }
 
-    private void ClickObject_OnHoverIn(ClickObject obj)
+    private void ClickObject_OnHoverIn(Tail obj)
     {
         if (_activeSystem != null) _activeSystem.OnHoverIn(obj);
     }
@@ -94,6 +103,7 @@ public class InputSystemManager : MonoBehaviour
         DisableSystem();
         _activeSystem = system;
         system.On();
+        if (_tailHovered) system.OnHoverIn(_tailHovered);
         OnChangeSystem?.Invoke();
     }
 
@@ -110,7 +120,12 @@ public class InputSystemManager : MonoBehaviour
 
     public void DisableSystem()
     {
-        if (_activeSystem != null) _activeSystem.Off();
+        if (_activeSystem != null)
+        {
+            if (_tailHovered != null) _activeSystem.OnHoverOut(_tailHovered);
+            _activeSystem.Off();
+        }
+            
         _activeSystem = null;
     }
 

@@ -16,9 +16,9 @@ public class TargetInputSystem : InputSystem
         _activeSpell = (TargetAction)SpellSystem.instance.SelectedSpell;
     }
 
-    public override void OnClick(ClickObject obj)
+    public override void OnClick(Tail obj)
     {
-        if (obj.isCreature)
+        if (obj.TailType == Tail.TailTypes.Character)
         {
             _activeSpell.Init(obj.GetComponent<CreatureStats>());
             MatchSystem.instance.RunAction(_activeSpell);
@@ -26,12 +26,12 @@ public class TargetInputSystem : InputSystem
         
     }
 
-    public override void OnHoverIn(ClickObject obj)
+    public override void OnHoverIn(Tail obj)
     {
         
     }
 
-    public override void OnHoverOut(ClickObject obj)
+    public override void OnHoverOut(Tail obj)
     {
         
     }

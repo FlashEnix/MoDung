@@ -13,7 +13,8 @@ public class GameHelper: MonoBehaviour
 
     public bool CheckAttack(CreatureStats from, CreatureStats to)
     {
-        AttackAction action = new AttackAction(from, to);
+        AttackAction action = from.GetComponent<AttackAction>();
+        action.Init(to);
         return action.Check();
     }
 

@@ -32,7 +32,9 @@ public class TailSystem : MonoBehaviour
     private void Tail_OnClick(Tail tail)
     {
         /*if (!SingleSystemManager.instance.CheckOn(GetType())) return;*/
-        MoveAction action = new MoveAction(MatchSystem.instance.GetActivePlayer(), tail);
+        //MoveAction action = new MoveAction(MatchSystem.instance.GetActivePlayer(), tail);
+        MoveAction action = MatchSystem.instance.GetActivePlayer().GetComponent<MoveAction>();
+        action.Init(tail);
         MatchSystem.instance.RunAction(action);
     }
 

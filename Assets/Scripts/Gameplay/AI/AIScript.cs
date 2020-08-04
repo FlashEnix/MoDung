@@ -30,17 +30,20 @@ public class AIScript : MonoBehaviour
             if (enemies.Count > 0)
             {
                 AIPriority enemy = checkPrority(enemies);
-                //Debug.LogFormat("Приоритетный враг - {0}, действие - {1}", enemy.enemy.name, enemy.isAttack?"Атака":"Движение");
                 if (enemy == null) return;
 
                 if (enemy.isAttack)
                 {
-                    AttackAction action = new AttackAction(_creatureStat, enemy.enemy);
+                    //AttackAction action = new AttackAction(_creatureStat, enemy.enemy);
+                    AttackAction action = GetComponent<AttackAction>();
+                    action.Init(enemy.enemy);
                     MatchSystem.instance.RunAction(action);
                 }
                 else
                 {
-                    MoveAction action = new MoveAction(_creatureStat, enemy.tail);
+                    //MoveAction action = new MoveAction(_creatureStat, enemy.tail);
+                    MoveAction action = GetComponent<MoveAction>();
+                    action.Init(enemy.tail);
                     MatchSystem.instance.RunAction(action);
                 }
             }

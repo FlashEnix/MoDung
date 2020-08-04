@@ -60,7 +60,9 @@ public class AI_Lich : AIScript
         if (attackList.Count > 0)
         {
             CreatureStats attack = attackList.First();
-            MatchSystem.instance.RunAction(new AttackAction(_creature, attack));
+            AttackAction action = GetComponent<AttackAction>();
+            action.Init(attack);
+            MatchSystem.instance.RunAction(action);
         }
         else
         {

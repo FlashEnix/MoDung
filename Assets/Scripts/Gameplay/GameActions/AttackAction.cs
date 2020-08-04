@@ -1,47 +1,30 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class AttackAction : BaseAction
+public class AttackAction : TargetAction
 {   
-    private CreatureStats _creatureFrom;
-    private CreatureStats _creatureTo;
     private bool _isExecuted = true;
-
-    public AttackAction(CreatureStats from, CreatureStats to)
-    {
-        if (from == null)
-        {
-            _creatureFrom = MatchSystem.instance.GetActivePlayer();
-        }
-        else
-        {
-            _creatureFrom = from;
-        }
-        
-        _creatureTo = to;
-    }
 
     private void PlayerScript_OnDealDamage()
     {
-        _creatureFrom.playerScript.OnDealDamage -= PlayerScript_OnDealDamage;
-        int attack = UnityEngine.Random.Range(_creatureFrom.minATK, _creatureFrom.maxATK);
-        DamageSystem.instance.DealDamage(_creatureFrom, _creatureTo, attack);
+        Source.playerScript.OnDealDamage -= PlayerScript_OnDealDamage;
+        int attack = UnityEngine.Random.Range(Source.minATK, Source.maxATK);
+        DamageSystem.instance.DealDamage(Source, Target, attack);
     }
 
     private void PlayerScript_OnAttackFinish()
     {
-        _creatureFrom.playerScript.OnAttackFinish -= PlayerScript_OnAttackFinish;
+        Source.playerScript.OnAttackFinish -= PlayerScript_OnAttackFinish;
         _isExecuted = false;
-        //status = MatchSystem.actionStatuses.end;
     }
 
     public override bool Check()
     {
-        if (_creatureFrom.team == _creatureTo.team) return false;
-        if (_creatureTo.tag == "DeathPlayer") return false;
-        float distance = Vector3.Distance(_creatureFrom.transform.position, _creatureTo.transform.position);
-        /*Debug.Log(distance);*/
-        if (_creatureFrom.rangeAttack == 0)
+        if (Source.team == Target.team) return false;
+        if (Target.tag == "DeathPlayer") return false;
+        float distance = Vector3.Distance(Source.transform.position, Target.transform.position);
+        
+        if (Source.rangeAttack == 0)
         {
             if (distance <= 1.6f)
             {
@@ -54,7 +37,7 @@ public class AttackAction : BaseAction
         }
         else
         {
-            if ((int)distance > _creatureFrom.rangeAttack)
+            if ((int)distance > Source.rangeAttack)
             {
                 return false;
             }
@@ -67,9 +50,9 @@ public class AttackAction : BaseAction
 
     public override IEnumerator Execute()
     {
-        _creatureFrom.playerScript.OnAttackFinish += PlayerScript_OnAttackFinish;
-        _creatureFrom.playerScript.OnDealDamage += PlayerScript_OnDealDamage;
-        _creatureFrom.playerScript.SetTarget(_creatureTo.gameObject);
+        Source.playerScript.OnAttackFinish += PlayerScript_OnAttackFinish;
+        Source.playerScript.OnDealDamage += PlayerScript_OnDealDamage;
+        Source.playerScript.SetTarget(Target.gameObject);
         status = MatchSystem.actionStatuses.start;
 
         while (_isExecuted)

@@ -130,7 +130,7 @@ public class CameraScript : MonoBehaviour
         else
         {
             activePlayer = null;
-            transform.Translate(moveVector, HorizontalPivot);
+            transform.Translate(moveVector * Time.deltaTime, HorizontalPivot);
         }
 
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, minX, maxX), transform.position.y, Mathf.Clamp(transform.position.z, minZ, maxZ));

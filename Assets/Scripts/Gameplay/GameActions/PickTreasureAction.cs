@@ -3,28 +3,18 @@ using UnityEngine;
 
 public class PickTreasureAction : BaseAction
 {
-    private CreatureStats _creature;
     private Treasure _treasure;
 
-    public PickTreasureAction(CreatureStats creature, Treasure treasure)
+    public void Init(Treasure treasure)
     {
-        if (creature == null)
-        {
-            _creature = MatchSystem.instance.GetActivePlayer();
-        }
-        else
-        {
-            _creature = creature;
-        }
-        
         _treasure = treasure;
     }
 
     public override bool Check()
     {
         if (_treasure.empty) return false;
-        int distance = (int)Vector3.Distance(_creature.transform.position, _treasure.transform.position);
-        if (distance == 1 && !InventorySystem.instance.CheckInventoryFull(_creature))
+        int distance = (int)Vector3.Distance(Source.transform.position, _treasure.transform.position);
+        if (distance == 1 && !InventorySystem.instance.CheckInventoryFull(Source))
         {
             return true;
         }
@@ -46,7 +36,7 @@ public class PickTreasureAction : BaseAction
             yield return new WaitForSeconds(0.5f);
         }        
 
-        if (InventorySystem.instance.AddItemToInventory(_creature, item) == true)
+        if (InventorySystem.instance.AddItemToInventory(Source, item) == true)
         {
             status = MatchSystem.actionStatuses.end;
             //Object.Destroy(_treasure.gameObject);

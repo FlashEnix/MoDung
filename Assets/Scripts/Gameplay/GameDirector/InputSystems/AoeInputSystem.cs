@@ -18,19 +18,19 @@ public class AoeInputSystem : InputSystem
         _activeSpell = (AoeAction)SpellSystem.instance.SelectedSpell;
     }
 
-    public override void OnClick(ClickObject obj)
+    public override void OnClick(Tail obj)
     {
         _activeSpell.Init(GameHelper.instance.GetTailFromObject(obj.gameObject));
         MatchSystem.instance.RunAction(_activeSpell);
     }
 
-    public override void OnHoverIn(ClickObject obj)
+    public override void OnHoverIn(Tail obj)
     {
         ClearResult();
         AreaSelect(obj.transform.position);
     }
 
-    public override void OnHoverOut(ClickObject obj)
+    public override void OnHoverOut(Tail obj)
     {
         ClearResult();
     }
