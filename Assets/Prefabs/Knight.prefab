@@ -153,7 +153,6 @@ GameObject:
   - component: {fileID: 6827923495373616393}
   - component: {fileID: 6827923495373616394}
   - component: {fileID: 773335210449508982}
-  - component: {fileID: 6827923495373616395}
   - component: {fileID: 6827923495373616392}
   - component: {fileID: 6827923495373616503}
   - component: {fileID: 9222268489430753881}
@@ -215,24 +214,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6827923495373616395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6827923495373616396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb3e0733ca645334ba056a673daa64cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curState: 0
-  anim: {fileID: 8444565072044079101}
-  speed: 2
-  shootModel: {fileID: 0}
-  targetsMove: []
-  targetAttack: {fileID: 0}
 --- !u!114 &6827923495373616392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,6 +302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4d8d5f6c61f8bf49999f7347705eb23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShootPrefab: {fileID: 0}
 --- !u!114 &1763895634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981,12 +963,6 @@ GameObject:
 --- !u!4 &1998222679870478983 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: fa3ef22864baf334c91263c62fd24928,
-    type: 3}
-  m_PrefabInstance: {fileID: 6827923495223472541}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &8444565072044079101 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: -6057140222963153312, guid: fa3ef22864baf334c91263c62fd24928,
     type: 3}
   m_PrefabInstance: {fileID: 6827923495223472541}
   m_PrefabAsset: {fileID: 0}

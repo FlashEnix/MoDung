@@ -52,6 +52,11 @@ public class MatchSystem : MonoBehaviour
     private void DamageSystem_OnDeathPlayer(CreatureStats c, IDamage damage)
     {
         _allPlayers.Remove(c);
+
+        c.gameObject.tag = "DeathPlayer";
+        c.gameObject.layer = 2;
+        c.GetComponent<CharacterController>().enabled = false;
+
         if (_currentPlayer == c) ChangePlayer();
 
         //Заплатк адля конца
@@ -78,7 +83,6 @@ public class MatchSystem : MonoBehaviour
 
     public void RunAction(IGameAction action)
     {
-        //if (UIDirector.instance.Notify != null) return;
         if (_currentAction != null) return;
 
         //Пропуск хода

@@ -16,7 +16,13 @@ public class shootPrefab : MonoBehaviour
     {
     }
 
-    public void setTarget(PlayerScript initiate, PlayerScript target)
+    private void OnDestroy()
+    {
+        if (explosionSfx != null) GameHelper.instance.PlaySoundShot(explosionSfx);
+        Instantiate(explosion, transform.position, Quaternion.identity);
+    }
+
+    /*public void setTarget(PlayerScript initiate, PlayerScript target)
     {
         _initiate = initiate;
         _target = target;
@@ -36,5 +42,5 @@ public class shootPrefab : MonoBehaviour
             _initiate.endAttack();
             Destroy(this.gameObject);
         }
-    }
+    }*/
 }

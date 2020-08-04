@@ -123,13 +123,13 @@ GameObject:
   - component: {fileID: 4994002673470809881}
   - component: {fileID: 1144265425978989013}
   - component: {fileID: 4994002673470809882}
-  - component: {fileID: 4994002673470809883}
   - component: {fileID: 4994002673470809880}
   - component: {fileID: 886262866853107927}
   - component: {fileID: 5903134173654077569}
   - component: {fileID: 4994002673470809885}
   - component: {fileID: 1899733106}
   - component: {fileID: 1899733107}
+  - component: {fileID: 1589062689}
   m_Layer: 2
   m_Name: LichBoss
   m_TagString: Player
@@ -183,25 +183,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &4994002673470809883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4994002673470809884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb3e0733ca645334ba056a673daa64cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curState: 0
-  anim: {fileID: 0}
-  speed: 2
-  shootModel: {fileID: 1733840401936279511, guid: c47ba3080de5a5b4e9df5408c2e193d4,
-    type: 3}
-  targetsMove: []
-  targetAttack: {fileID: 0}
 --- !u!114 &4994002673470809880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,6 +269,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4d8d5f6c61f8bf49999f7347705eb23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShootPrefab: {fileID: 0}
+--- !u!114 &1589062689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4994002673470809884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74784f2efa23ef84ca5ccfcbe6b17a3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &4653487270545569117

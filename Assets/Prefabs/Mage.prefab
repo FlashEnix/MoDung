@@ -4944,7 +4944,6 @@ GameObject:
   - component: {fileID: 4465675955175494238}
   - component: {fileID: 8599123423367802002}
   - component: {fileID: 4465675955175494237}
-  - component: {fileID: 4465675955175494236}
   - component: {fileID: 4465675955175494239}
   - component: {fileID: 4465675955175494176}
   - component: {fileID: 8429512579684969872}
@@ -5006,25 +5005,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &4465675955175494236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4465675955175494235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb3e0733ca645334ba056a673daa64cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curState: 0
-  anim: {fileID: 0}
-  speed: 2
-  shootModel: {fileID: 1733840401936279511, guid: c47ba3080de5a5b4e9df5408c2e193d4,
-    type: 3}
-  targetsMove: []
-  targetAttack: {fileID: 0}
 --- !u!114 &4465675955175494239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5115,6 +5095,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4d8d5f6c61f8bf49999f7347705eb23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShootPrefab: {fileID: 1733840401936279511, guid: c47ba3080de5a5b4e9df5408c2e193d4,
+    type: 3}
 --- !u!114 &1755562019
 MonoBehaviour:
   m_ObjectHideFlags: 0

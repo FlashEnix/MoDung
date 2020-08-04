@@ -1,21 +1,22 @@
 ﻿using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 public class AttackAction : TargetAction
-{   
-    private bool _isExecuted = true;
+{
+    public GameObject ShootPrefab;
 
-    private void PlayerScript_OnDealDamage()
-    {
-        Source.playerScript.OnDealDamage -= PlayerScript_OnDealDamage;
-        int attack = UnityEngine.Random.Range(Source.minATK, Source.maxATK);
-        DamageSystem.instance.DealDamage(Source, Target, attack);
-    }
+    private Transform _transform;
+    private AnimEventController _animEvent;
+    private bool _animEnd = false;
 
-    private void PlayerScript_OnAttackFinish()
+    private GameObject _shootModel;
+
+    private new void Start()
     {
-        Source.playerScript.OnAttackFinish -= PlayerScript_OnAttackFinish;
-        _isExecuted = false;
+        base.Start();
+        _transform = transform;
+        _animEvent = GetComponentInChildren<AnimEventController>();
     }
 
     public override bool Check()
@@ -50,17 +51,77 @@ public class AttackAction : TargetAction
 
     public override IEnumerator Execute()
     {
-        Source.playerScript.OnAttackFinish += PlayerScript_OnAttackFinish;
-        Source.playerScript.OnDealDamage += PlayerScript_OnDealDamage;
-        Source.playerScript.SetTarget(Target.gameObject);
-        status = MatchSystem.actionStatuses.start;
+        _transform.LookAt(Target.transform);
+        _animator.SetTrigger("Attack");
 
-        while (_isExecuted)
+        if (Source.rangeAttack == 0)
+        {
+            yield return MeleeAttack();
+        } else
+        {
+            yield return RangeAttack();
+        }
+    }
+
+    private IEnumerator MeleeAttack()
+    {
+        _animEvent.OnHitTime += _animEvent_OnHitTime;
+        _animEvent.OnAnimationEnd += _animEvent_OnAnimationEnd;
+        
+        while(!_animEnd)
         {
             yield return new WaitForSeconds(0.5f);
         }
 
+        _animEnd = false;
+
+        status = MatchSystem.actionStatuses.end;
+    }
+
+    private void _animEvent_OnAnimationEnd()
+    {
+        _animEnd = true;
+        _animEvent.OnAnimationEnd -= _animEvent_OnAnimationEnd;
+    }
+
+    private void _animEvent_OnHitTime()
+    {
+        int damage = Random.Range(Source.minATK, Source.maxATK);
+        DamageSystem.instance.DealDamage(Source, Target, damage);
+        _animEvent.OnHitTime -= _animEvent_OnHitTime;
+    }
+
+    private IEnumerator RangeAttack()
+    {
+        _animEvent.OnShootTime += _animEvent_OnShootTime;
+
+        //Ждем пока выпустят снаряд
+        while (_shootModel == null) yield return null;
+
+        Vector3 targetPosition = new Vector3(Target.transform.position.x, _shootModel.transform.position.y, Target.transform.position.z);
+
+        _shootModel.transform.LookAt(targetPosition);
+
+        while (Vector3.Distance(_shootModel.transform.position, targetPosition) > 0.1f)
+        {
+            _shootModel.transform.position = Vector3.MoveTowards(_shootModel.transform.position, targetPosition, 3 * Time.deltaTime);
+            yield return null;
+        }
+
+        Destroy(_shootModel);
+
+        //Расчитываем урон
+        int damage = Random.Range(Source.minATK, Source.maxATK);
+        DamageSystem.instance.DealDamage(Source, Target,damage);
+
         yield return new WaitForSeconds(0.5f);
         status = MatchSystem.actionStatuses.end;
+
+    }
+
+    private void _animEvent_OnShootTime(Vector3 startPosition)
+    {
+        _shootModel = Instantiate(ShootPrefab, startPosition, Quaternion.identity);
+        _animEvent.OnShootTime -= _animEvent_OnShootTime;
     }
 }

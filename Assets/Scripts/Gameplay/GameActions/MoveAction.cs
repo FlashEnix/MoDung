@@ -5,42 +5,43 @@ using UnityEngine;
 
 public class MoveAction : AoeAction
 {
-    private bool _isExecuted = true;
+    private Transform _transform;
+    private float _moveSpeed = 2;
 
-    private void PlayerScript_OnMoveFinish()
+    private new void Start()
     {
-        _isExecuted = false;
-        //Source.playerScript.OnMoveFinish -= PlayerScript_OnMoveFinish;
+        base.Start();
+        _transform = transform;
     }
 
     public override IEnumerator Execute()
     {
-        List<Vector3> path = PathFinder.instance.GetPath(Source.transform.position, Target.transform.position, Source.SPD);
+        //Освобождаем клетку, с которой двигается персонаж
+        Tail startTale = Physics.OverlapSphere(_transform.position, 0.2f, 1 << 8).First().GetComponent<Tail>();
+        startTale.TailType = Tail.TailTypes.Ground;
+        startTale.Creature = null;
 
-        for (int i = 1; i < path.Count; i++)
+        List<Tail> path = PathFinder.instance.getPath(startTale, Target, Source.SPD);
+
+        _animator.SetBool("walk", true);
+
+        foreach (Tail nextTail in path)
         {
-            //Освобождаем клетку, с которой двигается персонаж
-            Tail tail = Physics.OverlapSphere(transform.position, 0.2f, 1 << 8).First().GetComponent<Tail>();
-            tail.TailType = Tail.TailTypes.Ground;
-            tail.Creature = null;
-
-            GameObject obj = new GameObject("target");
-            obj.transform.position = path[i];
-            Source.playerScript.SetTarget(obj);
-
-            //Source.playerScript.OnMoveFinish += PlayerScript_OnMoveFinish;
+            _transform.LookAt(nextTail.transform);
+            while (_transform.position != nextTail.transform.position)
+            {
+                _transform.position = Vector3.MoveTowards(_transform.position, nextTail.transform.position, _moveSpeed * Time.deltaTime);
+                yield return null;
+            }
         }
 
-        while (Source.playerScript.targetsMove.Count > 0)
-        {
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        yield return new WaitForSeconds(1f);
+        _animator.SetBool("walk", false);
 
         //Занимаем клетку
         Target.Creature = Source;
         Target.TailType = Tail.TailTypes.Character;
+
+        yield return new WaitForSeconds(1);
 
         status = MatchSystem.actionStatuses.end;
     }

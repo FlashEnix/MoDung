@@ -13,7 +13,6 @@ public class UIDirector : MonoBehaviour
     public GameObject prefabPlayerPanel;
     public GameObject prefabInventoryItem;
     public GameObject prefabHealthBar;
-    public InventoryNotify prefabInventoryNotify;
 
     public Texture2D CursorImage;
     public Texture2D TargetCursorImage;
@@ -24,8 +23,6 @@ public class UIDirector : MonoBehaviour
     private CreatureStats[] _creatures;
     private List<PlayerPanelScript> _playerPanels = new List<PlayerPanelScript>();
     private Dictionary<IInventoryItem, GameObject> _inventoryIcons = new Dictionary<IInventoryItem, GameObject>();
-
-    public InventoryNotify Notify { get; private set; }
 
     void Start()
     {
@@ -107,8 +104,9 @@ public class UIDirector : MonoBehaviour
 
     private void InventorySystem_OnPickInventoryItem(CreatureStats creature, IInventoryItem item)
     {
-        Notify = Instantiate<InventoryNotify>(prefabInventoryNotify, BaseCanvas.transform);
-        Notify.SetItem(item);
+        /*Notify = Instantiate<InventoryNotify>(prefabInventoryNotify, BaseCanvas.transform);
+        Notify.SetItem(item);*/
+        UINotifyManager.instance.SendNotify(creature, item);
 
         PlayerPanelScript panel = _playerPanels.FirstOrDefault(x => x.Creature == creature);
 

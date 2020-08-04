@@ -34,9 +34,11 @@ public class AI_Lich : AIScript
         if (!MatchSystem.instance.CanAction || MatchSystem.instance.GetActivePlayer() != _creature) return;
         _enemies = FindObjectsOfType<CreatureStats>().Where(x => x.team != _creature.team).OrderBy(x => Vector3.Distance(_creature.transform.position, x.transform.position)).ToArray();
 
-        if (_creature.MP >= 2)
+        SkeletUpAction action = GetComponent<SkeletUpAction>();
+
+        if (action.Check())
         {
-            MatchSystem.instance.RunAction(new SkeletUpAction(_creature,_enemies.First().transform.position));
+            MatchSystem.instance.RunAction(action);
             return;
         }
         else

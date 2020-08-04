@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerScript))]
 public class CreatureStats : MonoBehaviour, ITailObject
 {
     public string creatureName = "Персонаж";

@@ -5,36 +5,54 @@ using UnityEngine;
 
 public class SkeletUpAction : BaseAction
 {
-    private CreatureStats _creature;
-    private Vector3 _targetDirection;
-
-    public SkeletUpAction(CreatureStats source,Vector3 targetDirection)
-    {
-        _creature = source;
-        _targetDirection = targetDirection;
-    }
-
     public override bool Check()
     {
-        return _creature.MP >= 2;
+        if (Source.MP < 2) return false;
+
+        Collider[] tails = Physics.OverlapSphere(Source.transform.position, 2, 1 << 8);
+
+        Tail target = null;
+
+        foreach (Collider col in tails)
+        {
+            Tail t = col.GetComponent<Tail>();
+            if (t.TailType == Tail.TailTypes.Ground)
+            {
+                target = t;
+            }
+        }
+
+        if (target == null) return false;
+        else return true;
     }
 
     public override IEnumerator Execute()
     {
-        _creature.MP -= 2;
+        Source.MP -= 2;
 
         //Определяем тайл на котором спавнить скелета
-        Collider[] tails = Physics.OverlapSphere(_creature.transform.position, 3, 1 << 8);
-        Tail target = tails.Where(x => PathFinder.instance.checkTailFree(x.transform.position)).OrderBy(x => Vector3.Distance(_creature.transform.position, _targetDirection)).FirstOrDefault().GetComponent<Tail>();
+        Collider[] tails = Physics.OverlapSphere(Source.transform.position, 3, 1 << 8);
 
-        _creature.GetComponent<PlayerScript>().SetAnim("SkeletSkill");
+        Tail target = null;
+
+        foreach (Collider col in tails)
+        {
+            Tail t = col.GetComponent<Tail>();
+            if (t.TailType == Tail.TailTypes.Ground)
+            {
+                target = t;
+            }
+        }
+
+        _animator.SetTrigger("SkeletSkill");
+
         yield return new WaitForSeconds(1);
         GameObject vfx = GameHelper.instance.InstantiateObject("SkeletUpVfx", target.transform.position);
         yield return new WaitForSeconds(1);
         GameObject skelet = GameHelper.instance.InstantiateObject("Skelet",target.transform.position);
         MatchSystem.instance.AddPlayer(skelet.GetComponent<CreatureStats>());
         yield return new WaitForSeconds(1);
-        MonoBehaviour.Destroy(vfx);
+        Destroy(vfx);
         status = MatchSystem.actionStatuses.end;
     }
 }

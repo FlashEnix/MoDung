@@ -8,51 +8,62 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AnimEventController : MonoBehaviour
 {
+    public event Action OnHitTime;
+    public event Action<Vector3> OnShootTime;
+    public event Action OnAnimationEnd;
+
     public AudioClip footSound;
     public AudioClip attackSound;
     private AudioSource audioSource;
-    PlayerScript script;
     public List<GameObject> animHips;
+
+    private Animator _animator;
+    private CreatureStats _creature;
     // Start is called before the first frame update
     void Start()
     {
-        script = this.GetComponentInParent<PlayerScript>();
         audioSource = GetComponent<AudioSource>();
+        _creature = GetComponentInParent<CreatureStats>();
+        _animator = GetComponent<Animator>();
+        DamageSystem.instance.OnDealDamage += Instance_OnDealDamage;
+        DamageSystem.instance.OnDeathPlayer += Instance_OnDeathPlayer;
+    }
+
+    private void Instance_OnDeathPlayer(CreatureStats creature, IDamage arg2)
+    {
+        if (creature == _creature) _animator.SetBool("death",true);
+    }
+
+    private void Instance_OnDealDamage(CreatureStats creature, IDamage arg2)
+    {
+        if (creature == _creature) _animator.SetTrigger("Impact");
     }
 
     // Update is called once per frame
     public void dealDamage()
     {
-        script.dealDamage();
+        OnHitTime?.Invoke();
         if (attackSound != null) audioSource.PlayOneShot(attackSound);
     }
 
     public void endAttack()
     {
-        //MoveScript.instance.endAction(script.gameObject);
-        script.endAttack();
+        OnAnimationEnd?.Invoke();
     }
 
     public void shootAttack()
     {
-        if (script.shootModel != null)
+        Vector3 startPosition = transform.position + new Vector3(0, .5f, .5f);
+
+        foreach (GameObject h in animHips)
         {
-            Vector3 startPosition = transform.position + new Vector3(0, .5f, .5f);
-
-            foreach(GameObject h in animHips)
+            if (h.name == "mixamorig:RightHand")
             {
-                if (h.name == "mixamorig:RightHand")
-                {
-                    startPosition = h.transform.position;
-                }
+                startPosition = h.transform.position;
             }
-
-            GameObject shoot = Instantiate(script.shootModel, startPosition, Quaternion.identity);
-            shoot.GetComponent<shootPrefab>().setTarget(script,script.targetAttack.GetComponent<PlayerScript>());
-
-            script.curState = PlayerScript.states.idle;
-            script.targetAttack = null;
         }
+
+        OnShootTime?.Invoke(startPosition);
     }
 
     public void footStep()
