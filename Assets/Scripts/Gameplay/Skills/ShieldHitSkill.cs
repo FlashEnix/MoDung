@@ -24,10 +24,10 @@ public class ShieldHitSkill : TargetAction, ISkill
     public override IEnumerator Execute()
     {
         Source.transform.LookAt(new Vector3(Target.transform.position.x, Source.transform.position.y, Target.transform.position.z));
-        Source.GetComponent<PlayerScript>().SetAnim("shieldAttack");
+        _animator.SetTrigger("shieldAttack");
         yield return new WaitForSeconds(1);
 
-        StunState check = Target.gameObject.GetComponent<StunState>();
+        StunState check = Target.GetComponent<StunState>();
         if (check != null) Destroy(check);
 
         Target.gameObject.AddComponent<StunState>();

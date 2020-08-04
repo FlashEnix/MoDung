@@ -24,7 +24,7 @@ public class DamageSystem : MonoBehaviour
         if (to.HP <= 0)
         {
             OnDeathPlayer?.Invoke(to, damage);
-        }
+        } 
         Debug.LogFormat("{0} наносит {1} урон {2}", from.name, realDamage, to.name);
         OnDealDamage?.Invoke(to,damage);
     }

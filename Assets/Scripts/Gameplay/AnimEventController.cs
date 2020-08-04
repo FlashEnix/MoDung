@@ -36,6 +36,7 @@ public class AnimEventController : MonoBehaviour
 
     private void Instance_OnDealDamage(CreatureStats creature, IDamage arg2)
     {
+        if (creature.HP <= 0) return;
         if (creature == _creature) _animator.SetTrigger("Impact");
     }
 

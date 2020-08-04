@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Tail : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class Tail : MonoBehaviour
         OnHovered?.Invoke(this);
         if (Input.GetMouseButtonUp(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             OnClick?.Invoke(this);
         }
     }

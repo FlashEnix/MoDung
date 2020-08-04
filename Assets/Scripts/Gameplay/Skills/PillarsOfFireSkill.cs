@@ -15,7 +15,7 @@ public class PillarsOfFireSkill : AoeAction, ISkill
 
     public override IEnumerator Execute()
     {
-        Source.GetComponent<PlayerScript>().SetAnim("cast");
+        _animator.SetTrigger("cast");
         if (Trail != null) Trail.SetActive(true);
         yield return new WaitForSeconds(0.5f);
 

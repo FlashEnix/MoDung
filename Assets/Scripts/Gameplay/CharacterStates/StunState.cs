@@ -29,4 +29,9 @@ public class StunState : ICharacterState
         GameHelper.instance.PlaySoundShot(Sound, .5f);
         CoolDown = 1;
     }
+
+    private void OnDestroy()
+    {
+        Destroy(Vfx);
+    }
 }

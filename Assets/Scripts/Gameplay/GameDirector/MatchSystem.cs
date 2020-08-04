@@ -57,6 +57,10 @@ public class MatchSystem : MonoBehaviour
         c.gameObject.layer = 2;
         c.GetComponent<CharacterController>().enabled = false;
 
+        //Удаляем все состояния
+        ICharacterState[] states = c.GetComponents<ICharacterState>();
+        foreach (var state in states) Destroy(state);
+
         if (_currentPlayer == c) ChangePlayer();
 
         //Заплатк адля конца

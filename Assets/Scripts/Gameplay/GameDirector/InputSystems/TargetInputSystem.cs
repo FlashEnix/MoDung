@@ -20,18 +20,21 @@ public class TargetInputSystem : InputSystem
     {
         if (obj.TailType == Tail.TailTypes.Character)
         {
-            _activeSpell.Init(obj.GetComponent<CreatureStats>());
+            _activeSpell.Init(obj.Creature);
             MatchSystem.instance.RunAction(_activeSpell);
         }
         
     }
 
-    public override void OnHoverIn(Tail obj)
+    public override void OnHoverIn(Tail tail)
     {
-        
+        /*if (tail.TailType == Tail.TailTypes.Character)
+        {
+            if (_activeSpell.Check)
+        }*/
     }
 
-    public override void OnHoverOut(Tail obj)
+    public override void OnHoverOut(Tail tail)
     {
         
     }
